@@ -26,6 +26,8 @@ public class SortTest {
          * CountSortPerson  (Memory usage-optimised CountSortNumeric specific for Person.class that breaks 'The Open Closed Principle' for it)
          * Heapsort         (Memory-friendly algorithm with Comparator)
          *
+         * TO DO for sorts: handle null values in arrays
+         *
          * See their classes to learn more
          * */
 
@@ -67,6 +69,8 @@ public class SortTest {
          */
 
         //TASK 3
+        //for generated array of Person maximum of unique records is 6400 since height and
+        // weight ranges for Person.generate(...) are 80 and 80*80 is 6400
         Person[] people1 = {
                 new Person(1, 1, 1),
                 new Person(1, 1, 1),
@@ -125,11 +129,18 @@ public class SortTest {
         return findWithSameXDifferentY(people, Person::getWeight, Person::getHeight);
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> int findWithSameXDifferentY(T[] arr, IntFunction<T> paramXFunc, IntFunction<T> paramYFunc) {
         if (arr.length < 1) return 0;
         int count = 1;
-        new CountSortNumeric<T>().sort(arr, paramYFunc);
-        new CountSortNumeric<T>().sort(arr, paramXFunc);
+
+        if (arr instanceof Person[] arr1){
+            new CountSortPerson().sort(arr1, (IntFunction<Person>) paramYFunc);
+            new CountSortPerson().sort(arr1, (IntFunction<Person>) paramXFunc);
+        }else {
+            new CountSortNumeric<T>().sort(arr, paramYFunc);
+            new CountSortNumeric<T>().sort(arr, paramXFunc);
+        }
 
         T prev = arr[0];
         for (T element : arr) {
